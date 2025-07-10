@@ -1,23 +1,59 @@
+/* eslint-disable no-console */
 import { Server } from "http"
 import mongoose from "mongoose"
 import app from "./app"
+import { envVars } from "./app/config/env"
 
 let server : Server
 
-const port=5000
 
 const startServer=async()=>{
    try {
-     await mongoose.connect("mongodb+srv://mongoose:yGUZ.gTgW9mHcx7@cluster0.hblj92w.mongodb.net/Tour-Management?retryWrites=true&w=majority&appName=Cluster0")
+     await mongoose.connect(envVars.MONGODB_URL)
     console.log('connect');
     
-    server =app.listen(port,()=>{
-        console.log('server is listening to port 5000');
+    server =app.listen(envVars.PORT,()=>{
+        console.log(`server is listening to port ${envVars.PORT}`);
         
     })
    } catch (error) {
      console.log(error);
    }
 }
+
+process.on("SIGTERM",(ere)=>{
+  console.log( "sigterm signal received",ere);
+  if(server){
+    server.close(()=>{
+      process.exit(1)
+    })
+  }
+  process.exit(1)
+})
+
+process.on("unhandledRejection",(ere)=>{
+  console.log( "unhandled rejection",ere);
+  if(server){
+    server.close(()=>{
+      process.exit(1)
+    })
+  }
+  process.exit(1)
+})
+process.on("uncaughtException",(ere)=>{
+  console.log( "unhandled exception",ere);
+  if(server){
+    server.close(()=>{
+      process.exit(1)
+    })
+  }
+  process.exit(1)
+})
+
+//unhandledRejection error
+// Promise.reject(new Error("I Forget to catch this promise"))
+
+//uncaughtException error
+// throw new Error("I forget to catch this local error")
 
 startServer()
