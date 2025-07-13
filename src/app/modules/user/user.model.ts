@@ -12,8 +12,8 @@ const authProviderSchema = new mongoose.Schema({
     }
 },
     {
-        timestamps: true,
-        versionKey: false
+        versionKey: false,
+        _id: false
     })
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema<IUser>({
     password: {
         type: String,
     },
-    roll: {
+    role: {
         type: String,
         enum: Object.values(Role),
         default: Role.USER
@@ -63,5 +63,5 @@ const userSchema = new mongoose.Schema<IUser>({
         versionKey: false
     })
 
-const User =model<IUser>('User', userSchema)
+const User = model<IUser>('User', userSchema)
 export default User
