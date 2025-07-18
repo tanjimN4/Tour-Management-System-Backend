@@ -29,6 +29,9 @@ const userSchema = new mongoose.Schema<IUser>({
     password: {
         type: String,
     },
+    age: {
+        type: Number
+    },
     role: {
         type: String,
         enum: Object.values(Role),
