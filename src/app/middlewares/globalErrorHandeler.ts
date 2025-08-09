@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
+import { deleteImageFromCloudinary } from "../config/cloudinary.config";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/AppError";
 import { handelValidationError } from "../helpers/handelValidationError";
@@ -9,11 +10,17 @@ import { handleCastError } from "../helpers/handleCastError";
 import { handleDuplicateError } from "../helpers/handleDuplicateError";
 import { TErrorSources } from "../interfaces/error.types";
 
-export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
     if (envVars.NODE_ENV === 'development') {
         console.log(err);
     }
-    
+    if(req.file){
+        await deleteImageFromCloudinary(req.file.path)
+    }
+    if(req.files && Array.isArray(req.files) && req.files.length > 0){
+        const imageUrls = (req.files as Express.Multer.File[]).map(file=>file.path)
+        await Promise.all(imageUrls.map(url=>deleteImageFromCloudinary(url)))
+    }
     let statusCode = 500;
     let message = `something went wrong !!`;
 

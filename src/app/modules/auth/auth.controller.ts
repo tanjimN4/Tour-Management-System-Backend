@@ -93,14 +93,49 @@ const logout = catchAsync(async (req: Request, res: Response, next: NextFunction
 })
 const resetPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const newPassword = req.body.newPassword
-    const oldPassword = req.body.oldPassword
     const decodeToken = req.user
-    await AuthServices.resetPassword(oldPassword, newPassword, decodeToken as JwtPayload)
+    await AuthServices.resetPassword(req.body, decodeToken as JwtPayload)
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: 'Users Password Changed successfully',
+        data: null,
+    })
+})
+const setPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const decodedToken = req.user as JwtPayload
+    const { password } = req.body;
+
+    await AuthServices.setPassword(decodedToken.userId, password);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Password Changed Successfully",
+        data: null,
+    })
+})
+const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const newPassword = req.body.newPassword
+    const oldPassword = req.body.oldPassword
+    const decodeToken = req.user
+    await AuthServices.changePassword(oldPassword, newPassword, decodeToken as JwtPayload)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Users Password Changed successfully',
+        data: null,
+    })
+})
+const forgetPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const {email}=req.body
+    await AuthServices.forgetPassword(email)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Email send successfully',
         data: null,
     })
 })
@@ -134,5 +169,8 @@ export const AuthControllers = {
     getNewAccessToken,
     logout,
     resetPassword,
-    googleCallBackController
+    googleCallBackController,
+    changePassword,
+    setPassword,
+    forgetPassword
 }

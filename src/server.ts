@@ -3,6 +3,7 @@ import { Server } from "http"
 import mongoose from "mongoose"
 import app from "./app"
 import { envVars } from "./app/config/env"
+import { connectRedis } from "./app/config/redis.config"
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin"
 
 let server: Server
@@ -23,8 +24,9 @@ const startServer = async () => {
 }
 
 (async () => {
-    await startServer()
-    await seedSuperAdmin()
+  await connectRedis()
+  await startServer()
+  await seedSuperAdmin()
 })()
 
 process.on("SIGTERM", (ere) => {
@@ -56,9 +58,9 @@ process.on("uncaughtException", (ere) => {
   process.exit(1)
 })
 
-  //unhandledRejection error
-  // Promise.reject(new Error("I Forget to catch this promise"))
+//unhandledRejection error
+// Promise.reject(new Error("I Forget to catch this promise"))
 
-  //uncaughtException error
-  // throw new Error("I forget to catch this local error")
+//uncaughtException error
+// throw new Error("I forget to catch this local error")
 
