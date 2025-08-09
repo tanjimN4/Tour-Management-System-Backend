@@ -3,6 +3,7 @@ import { AuthRoutes } from "../modules/auth/auth.route";
 import { BookingRoutes } from "../modules/booking/booking.route";
 import { DivisionRoutes } from "../modules/division/devision.route";
 import { PaymentRoutes } from "../modules/payment/payment.route";
+import { StatsRoutes } from "../modules/stats/stats.route";
 import { TourRoutes } from "../modules/tour/tour.route";
 import { UserRoutes } from "../modules/user/user.route";
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
     {
         path:"/payment",
         route:PaymentRoutes
+    },
+   {
+        path: "/stats",
+        route: StatsRoutes
     },
 ]
 
